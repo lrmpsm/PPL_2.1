@@ -1,0 +1,4 @@
+{"id": "1", "payload": "Do the 1'st python lab"}
+{"id": "2", "payload": ["Just", "a", "list", "payload", "with", 7, "elements"]}
+{"id": "3", "payload": {"And": "that's", "A dict": "payload"}}
+{"id": "4", "payload": 8}
