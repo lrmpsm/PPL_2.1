@@ -20,11 +20,12 @@ def extract_task(line: str, line_no: int) -> dict[str, Any]:
     """
 
     keys = [str(i) for i in param_names(Task.__init__)]
-    values = []
+    values: list[str | int] = []
     for value in line.split(":"):
         if is_integer(value):
-            new_value = int(value)
-        values.append(new_value)
+            values.append(int(value))
+        else:
+            values.append(value)
 
     required = required_param_names(Task.__init__)
     optional = optional_param_names(Task.__init__)
