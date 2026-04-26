@@ -16,7 +16,7 @@ def test_plugins_command() -> None:
 
 def test_build_sources_creates_requested_source_objects(tmp_path) -> None:
     path = tmp_path / "tasks.jsonl"
-    path.write_text('{"id": "1", "payload": "x"}\n', encoding="utf-8")
+    path.write_text('some kind task\n', encoding="utf-8")
 
     sources = _build_sources(stdin=True, jsonl=[path], generator_count=2)
 

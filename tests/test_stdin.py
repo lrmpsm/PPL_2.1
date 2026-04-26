@@ -2,15 +2,20 @@ import io
 
 import pytest
 
-from src.models.task import Task
-from src.sources.stdin import StdinLineSource, create_source, extract_task
 from src.contracts.task_source import TaskSource
+from src.models.task_status import TaskStatus
+from src.sources.stdin import StdinLineSource, create_source, extract_task
+
 
 def test_extract_task_success() -> None:
-    task_id, payload = extract_task("abc:hello", 1)
+    task_data = extract_task("abc:hello:3:created", 1)
 
-    assert task_id == "abc"
-    assert payload == "hello"
+    assert task_data == {
+        "id": "abc",
+        "description": "hello",
+        "priority": 3,
+        "status": "created",
+    }
 
 
 def test_extract_task_value_error() -> None:
@@ -19,15 +24,27 @@ def test_extract_task_value_error() -> None:
 
 
 def test_stdin_source_skips_empty_lines() -> None:
-    fake_input = io.StringIO("\nfirst:первая задача\n\nsecond:вторая задача\n")
+    fake_input = io.StringIO(
+        "\n"
+        "first:первая задача:3:created\n"
+        "\n"
+        "second:вторая задача:5:pending\n"
+    )
     source = StdinLineSource(stream=fake_input)
 
     tasks = list(source.fetch())
 
-    assert tasks == [
-        Task(id="first", payload="первая задача"),
-        Task(id="second", payload="вторая задача"),
-    ]
+    assert len(tasks) == 2
+
+    assert tasks[0].id == "first"
+    assert tasks[0].description == "первая задача"
+    assert tasks[0].priority == 3
+    assert tasks[0].status == TaskStatus.CREATED
+
+    assert tasks[1].id == "second"
+    assert tasks[1].description == "вторая задача"
+    assert tasks[1].priority == 5
+    assert tasks[1].status == TaskStatus.PENDING
 
 
 def test_stdin_source_compiles_with_contract() -> None:

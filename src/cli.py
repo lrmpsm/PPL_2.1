@@ -60,6 +60,7 @@ def read(
         "--generator",
         help="Count of generated tasks"
     ),
+    contains: str | None = typer.Option(None, "--contains", help="Substring filter"),
 ) -> None:
 
     logger.info("Read command started")
@@ -77,7 +78,8 @@ def read(
 
     for task in inbox.iter_tasks():
         numbers += 1
-        typer.echo(f"[{task.id}] {task.payload}")
+        typer.echo(task)
+        typer.echo("-----------------")
 
         logger.debug(f"Task fetched: id = '{task.id}'")
 
