@@ -1,6 +1,13 @@
 from .exceptions import InvalidTaskPriorityError
 
 class TimeAsText:
+    """
+    Non-data descriptor для ленивого форматирования datetime аттрибутов
+    в человекочитаемый вид.
+
+    Обеспечивает кеширование вычисленного отформаттированного значения
+    до момента изменения любого аттрибута публичного API модели Task.
+    """
     def __init__(self, source_attr: str, fmt: str = "%d.%m.%Y %H:%M:%S %Z") -> None:
         self.source_attr = source_attr
         self.fmt = fmt
@@ -20,6 +27,15 @@ class TimeAsText:
 
 
 class ValidatedField:
+    """
+    Базовый класс для data descriptors.
+
+    Setter реализован таким способом, что:
+    - сначала валидируется присваеваемое значение
+    - потом оно присваивается аттрибуту данного валидатора
+    - если у класса, в котором используется валидатор,
+    есть метод _touch, то он вызывается.
+    """
     def __set_name__(self, owner: type, name: str) -> None:
         self.private_name = f"_{name}"
 
@@ -42,6 +58,16 @@ class ValidatedField:
 
 
 class NonEmptyLimitedString(ValidatedField):
+    """
+    Data descriptor для непустых текстовых полей с
+    ограниченной длинной символов.
+
+    :max_length - максимальное кол-во символов аттрибута
+    :error_cls - класс исключения, который вызывается
+    при ошибках валидации
+    :field_name - имя аттрибута, которое будет фигурировать в
+    текстах ошибки
+    """
     def __init__(
             self,
             max_length: int = 1000,
@@ -63,6 +89,13 @@ class NonEmptyLimitedString(ValidatedField):
 
 
 class Priority(ValidatedField):
+    """
+    Data descriptor для приоритета.
+
+    Возможно задание максимального и
+    минимального значений, доступных
+    для соответствующего атрибута.
+    """
     def __init__(
             self,
             min_value: int = 1,

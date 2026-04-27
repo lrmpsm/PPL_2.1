@@ -1,6 +1,6 @@
 class TaskError(Exception):
     """
-    Base exception for task model errors.
+    Базовое исключение для класса `Task`.
     """
 
 class InvalidTaskIdError(TaskError):

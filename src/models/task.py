@@ -38,6 +38,10 @@ class Task:
             priority: int = TASK_PRIORITY_DEFAULT_VALUE,
             status: TaskStatus | str = TaskStatus.CREATED,
     ) -> None:
+        """
+        Создает задачу с идентификатором, описанием, приоритетом
+        и статусом задачи.
+        """
         self.id = id
         self.description = description
         self.priority = priority
@@ -47,6 +51,13 @@ class Task:
         self._updated_at = now
 
     def _touch(self) -> None:
+        """
+        Обновляет аттрибут `_updated_at` в соответствии с настоящим временем.
+        Удаляет кэш человекочитабельного формата, содержащегося в атрибуте
+        `_updated_at`
+
+        Вызывается при изменении атрибутов публичного API класса.
+        """
         if "_created_at" in self.__dict__:
             self._updated_at = datetime.now(timezone.utc)
             self.__dict__.pop("updated_at_text", None)
@@ -69,6 +80,13 @@ class Task:
 
     @status.setter
     def status(self, value: TaskStatus | str) -> None:
+        """
+        Задает значение статусу задачи
+
+        Если `value` не строка, проверяет, может ли она быть
+        преобразована в объект перечисления `TaskStatus`, и
+        преобразует в него, если это так.
+        """
         if isinstance(value, str):
             try:
                 value = TaskStatus(value)
