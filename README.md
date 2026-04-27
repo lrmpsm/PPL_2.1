@@ -17,6 +17,8 @@
 ```
 .
 ├── README.md
+├── .gitignore
+├── .pre-commit-config.yaml
 ├── pyproject.toml
 ├── sources
 │   └── tasks.jsonl
