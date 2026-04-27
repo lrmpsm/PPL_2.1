@@ -13,10 +13,13 @@ class TaskQueue:
     Очередь получает задачи из источников во время
     итерации и не хранит сами задачи в памяти.
     """
-    def __init__(self, sources: Iterable[TaskSource]) -> None:
+    def __init__(self, sources: Iterable[TaskSource] | TaskSource) -> None:
         """
         Создать очередь задач, указав источники задач.
         """
+        if isinstance(sources, TaskSource):
+            sources = [sources]
+
         self.sources: list[TaskSource] = list(sources)
 
     def __iter__(self) -> Iterator[Task]:
@@ -24,7 +27,7 @@ class TaskQueue:
             for task in source.fetch():
                 yield task
 
-    def filter_by_status(self, statuses: Iterable[str | TaskStatus]) -> Iterator[Task]:
+    def filter_by_statuses(self, statuses: Iterable[str | TaskStatus]) -> Iterator[Task]:
         """
         Отфильтровать задачи из источников по
         принадлежности к списку из статусов
