@@ -59,8 +59,7 @@ def read(
         None,
         "--generator",
         help="Count of generated tasks"
-    ),
-    contains: str | None = typer.Option(None, "--contains", help="Substring filter"),
+    )
 ) -> None:
 
     logger.info("Read command started")
